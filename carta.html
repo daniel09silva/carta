@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Para Milagros, con todo mi amor</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0010 0%, #3d0020 40%, #1a0010 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      padding: 40px 20px;
+      font-family: 'Crimson Text', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Pétalos flotantes ── */
+    .petals { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .petal {
+      position: absolute;
+      width: 18px; height: 18px;
+      background: radial-gradient(circle at 30% 30%, #ffb3c6, #e0004c);
+      border-radius: 50% 0 50% 0;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-60px) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.85; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── Corazones flotantes ── */
+    .hearts-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .heart-float {
+      position: absolute;
+      font-size: 1.4rem;
+      opacity: 0;
+      animation: floatHeart linear infinite;
+    }
+    @keyframes floatHeart {
+      0%   { transform: translateY(110vh) scale(0.5); opacity: 0; }
+      10%  { opacity: 0.5; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-80px) scale(1.2); opacity: 0; }
+    }
+
+    /* ── Sobre ── */
+    .envelope-wrapper { position: relative; z-index: 10; perspective: 1200px; }
+
+    .envelope {
+      width: 340px;
+      cursor: pointer;
+      position: relative;
+      animation: gentleBob 3s ease-in-out infinite;
+      transition: transform 0.4s;
+    }
+    .envelope:hover { transform: scale(1.04); }
+
+    @keyframes gentleBob {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .envelope-body {
+      background: linear-gradient(160deg, #fff5f7 0%, #ffe0ea 100%);
+      border-radius: 6px 6px 12px 12px;
+      padding: 20px 20px 24px;
+      box-shadow: 0 20px 60px rgba(200,0,60,0.5), 0 0 0 1px rgba(200,60,100,0.2);
+      text-align: center;
+    }
+    .envelope-body .to-label {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem;
+      color: #a0002e;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .envelope-body .name {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.6rem;
+      color: #c0004a;
+      text-shadow: 0 2px 10px rgba(200,0,60,0.3);
+    }
+    .seal {
+      font-size: 3rem;
+      line-height: 1;
+      filter: drop-shadow(0 2px 6px rgba(200,0,60,0.5));
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);    filter: drop-shadow(0 2px 6px rgba(200,0,60,0.5)); }
+      50%       { transform: scale(1.15); filter: drop-shadow(0 4px 14px rgba(200,0,60,0.8)); }
+    }
+    .open-hint {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1rem;
+      color: #c0004a;
+      margin-top: 10px;
+      opacity: 0.7;
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0.7; }
+      50%       { opacity: 0.2; }
+    }
+
+    /* ── Sección pregunta secreta (dentro de la carta) ── */
+    .pregunta-section {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px dashed rgba(200,80,120,0.3);
+    }
+
+    .pregunta-texto {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.25rem;
+      color: #a0003a;
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+
+    .lock-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.3s;
+    }
+    .lock-btn:hover { transform: scale(1.12); }
+
+    .lock-icon {
+      font-size: 3.4rem;
+      filter: drop-shadow(0 0 14px rgba(255,80,130,0.7));
+      animation: lockPulse 2s ease-in-out infinite;
+    }
+    @keyframes lockPulse {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(255,80,130,0.6)); }
+      50%       { filter: drop-shadow(0 0 22px rgba(255,80,130,1)); }
+    }
+    .lock-hint {
+      font-family: 'Dancing Script', cursive;
+      font-size: 0.9rem;
+      color: #c0004a;
+      opacity: 0.75;
+    }
+
+    /* ── Modal carta ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 0, 8, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .carta {
+      background: linear-gradient(160deg, #fff9fb 0%, #fff0f5 100%);
+      border-radius: 18px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 50px 55px;
+      position: relative;
+      box-shadow:
+        0 30px 80px rgba(180,0,50,0.5),
+        0 0 0 2px rgba(220,80,120,0.25),
+        inset 0 0 60px rgba(255,220,235,0.5);
+      animation: unfold 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes unfold {
+      from { opacity: 0; transform: scale(0.7) rotateX(15deg); }
+      to   { opacity: 1; transform: scale(1) rotateX(0deg); }
+    }
+    .carta::before {
+      content: '';
+      position: absolute;
+      inset: 50px 55px;
+      background-image: repeating-linear-gradient(
+        transparent, transparent 31px,
+        rgba(220,160,180,0.25) 31px, rgba(220,160,180,0.25) 32px
+      );
+      pointer-events: none;
+    }
+    .carta-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      font-size: 1.8rem;
+      color: #c0004a;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .carta-close:hover { opacity: 1; }
+
+    .carta-header { text-align: center; margin-bottom: 30px; position: relative; }
+    .carta-header .roses { font-size: 2rem; letter-spacing: 6px; }
+    .carta-header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.8rem;
+      color: #b0003a;
+      text-shadow: 0 2px 8px rgba(180,0,50,0.2);
+      margin: 8px 0 4px;
+    }
+    .carta-header .subtitle {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem;
+      color: #cc4470;
+    }
+    .divider { text-align: center; font-size: 1.5rem; margin: 20px 0; color: #e0607a; letter-spacing: 10px; }
+
+    .carta-body { position: relative; z-index: 1; color: #3a0015; font-size: 1.25rem; line-height: 2rem; }
+    .carta-body p { margin-bottom: 20px; text-align: justify; }
+    .carta-body .saludo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.6rem;
+      color: #c0004a;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .carta-body .firma {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      color: #b0003a;
+      text-align: right;
+      margin-top: 30px;
+    }
+    .carta-body .firma span { display: block; font-size: 1.1rem; color: #cc4470; }
+
+    /* ── Modal Login ── */
+    .login-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 0, 6, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-overlay.open { display: flex; }
+
+    .login-box {
+      background: linear-gradient(160deg, #2a0015 0%, #1a000d 100%);
+      border: 1px solid rgba(220,80,120,0.35);
+      border-radius: 22px;
+      padding: 44px 40px 36px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 24px 70px rgba(200,0,60,0.5), inset 0 0 40px rgba(80,0,30,0.4);
+      animation: unfold 0.5s cubic-bezier(0.22,1,0.36,1);
+      position: relative;
+    }
+    .login-box .close-login {
+      position: absolute;
+      top: 14px; right: 18px;
+      font-size: 1.4rem;
+      color: #ff6090;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .login-box .close-login:hover { opacity: 1; }
+
+    .login-icon { font-size: 3rem; margin-bottom: 10px; }
+
+    .login-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.7rem;
+      color: #ffb0cc;
+      margin-bottom: 6px;
+    }
+    .login-sub {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1rem;
+      color: #cc6080;
+      margin-bottom: 28px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .login-input {
+      width: 100%;
+      padding: 12px 46px 12px 18px;
+      border-radius: 50px;
+      border: 1px solid rgba(220,80,120,0.4);
+      background: rgba(255,255,255,0.06);
+      color: #ffd0e0;
+      font-size: 1.1rem;
+      font-family: 'Crimson Text', serif;
+      outline: none;
+      text-align: center;
+      letter-spacing: 3px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .login-input::placeholder { letter-spacing: 1px; color: rgba(255,180,200,0.4); }
+    .login-input:focus {
+      border-color: rgba(255,80,130,0.7);
+      box-shadow: 0 0 16px rgba(255,60,110,0.3);
+    }
+    .login-input.error { border-color: #ff4040; box-shadow: 0 0 16px rgba(255,40,40,0.3); animation: shake 0.35s; }
+
+    .toggle-pass {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #ff809a;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      line-height: 1;
+    }
+    .toggle-pass:hover { opacity: 1; }
+
+    .char-hint {
+      margin-top: 10px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 0.95rem;
+      color: #cc6080;
+      min-height: 1.2em;
+      transition: color 0.3s;
+    }
+    .char-hint.completo { color: #4dcc80; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+
+    .pista-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.15rem;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(255,80,130,0.25), rgba(255,160,190,0.15));
+      border: 1px solid rgba(255,120,160,0.5);
+      border-radius: 50px;
+      padding: 7px 20px;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      animation: pistaGlow 1.6s ease-in-out infinite;
+      transition: transform 0.2s;
+    }
+    .pista-link:hover { transform: scale(1.08); }
+    @keyframes pistaGlow {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(255,100,150,0.5), 0 0 20px rgba(255,80,130,0.2);
+        border-color: rgba(255,120,160,0.5);
+        color: #ffd0e0;
+      }
+      50% {
+        box-shadow: 0 0 18px rgba(255,100,150,0.9), 0 0 40px rgba(255,80,130,0.5);
+        border-color: rgba(255,160,190,0.9);
+        color: #fff;
+      }
+    }
+
+    .login-btn {
+      margin-top: 22px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #c0004a, #ff4477);
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(200,0,60,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .login-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(200,0,60,0.6); }
+
+    /* ── Popup pista ── */
+    .pista-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .pista-popup.open { display: flex; }
+
+    .pista-box {
+      background: linear-gradient(160deg, #fff5f8 0%, #ffe8f0 100%);
+      border-radius: 20px;
+      padding: 36px 32px 28px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(180,0,50,0.5), 0 0 0 2px rgba(220,80,120,0.2);
+      animation: unfold 0.4s cubic-bezier(0.22,1,0.36,1);
+      position: relative;
+    }
+    .pista-box .close-pista {
+      position: absolute;
+      top: 12px; right: 16px;
+      font-size: 1.2rem;
+      color: #c0004a;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    .pista-box .close-pista:hover { opacity: 1; }
+
+    .pista-emoji { font-size: 2.2rem; margin-bottom: 10px; }
+    .pista-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      color: #b0003a;
+      margin-bottom: 14px;
+    }
+    .pista-texto {
+      font-family: 'Crimson Text', serif;
+      font-size: 1.1rem;
+      color: #4a0020;
+      line-height: 1.7;
+    }
+    .pista-texto em {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      color: #c0004a;
+      font-style: normal;
+    }
+
+    /* ── Modal éxito ── */
+    .exito-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,0,6,0.88);
+      backdrop-filter: blur(8px);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .exito-overlay.open { display: flex; }
+
+    .exito-box {
+      background: linear-gradient(160deg, #fff9fb 0%, #fff0f5 100%);
+      border-radius: 22px;
+      padding: 50px 44px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(180,0,50,0.5), 0 0 0 2px rgba(220,80,120,0.25);
+      animation: unfold 0.6s cubic-bezier(0.22,1,0.36,1);
+      position: relative;
+    }
+    .exito-box .close-exito {
+      position: absolute;
+      top: 16px; right: 20px;
+      font-size: 1.5rem;
+      color: #c0004a;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    .exito-box .close-exito:hover { opacity: 1; }
+
+    .exito-icon { font-size: 3.5rem; margin-bottom: 14px; animation: pulse 1.5s ease-in-out infinite; }
+    .exito-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      color: #b0003a;
+      margin-bottom: 20px;
+    }
+    .exito-mensaje {
+      font-family: 'Crimson Text', serif;
+      font-size: 1.2rem;
+      color: #3a0015;
+      line-height: 1.9;
+      text-align: justify;
+    }
+    .exito-firma {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: #c0004a;
+      margin-top: 24px;
+    }
+    .btn-pagina2 {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 13px 36px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #c0004a, #ff4477);
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      text-decoration: none;
+      box-shadow: 0 6px 22px rgba(200,0,60,0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    .btn-pagina2:hover {
+      transform: scale(1.07);
+      box-shadow: 0 10px 30px rgba(200,0,60,0.7);
+    }
+
+    /* ── Reproductor ── */
+    .music-player {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(60, 0, 20, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(220,80,120,0.4);
+      border-radius: 50px;
+      padding: 12px 22px 12px 16px;
+      box-shadow: 0 8px 32px rgba(200,0,60,0.35);
+    }
+    .play-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #e0004c, #ff4477);
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(200,0,60,0.5);
+      transition: transform 0.2s;
+    }
+    .play-btn:hover { transform: scale(1.1); }
+    .music-info { color: #ffd0e0; font-family: 'Dancing Script', cursive; }
+    .music-info .song-title { font-size: 1rem; display: block; }
+    .music-info .artist    { font-size: 0.8rem; opacity: 0.7; }
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 70px; height: 4px;
+      border-radius: 2px;
+      background: rgba(255,180,210,0.4);
+      outline: none;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #ff4477;
+      cursor: pointer;
+    }
+
+    /* Scrollbar */
+    .carta::-webkit-scrollbar { width: 6px; }
+    .carta::-webkit-scrollbar-track { background: transparent; }
+    .carta::-webkit-scrollbar-thumb { background: rgba(200,80,120,0.4); border-radius: 3px; }
+
+    @media (max-width: 480px) {
+      .carta { padding: 36px 28px; }
+      .carta-header h1 { font-size: 2.2rem; }
+      .carta-body { font-size: 1.1rem; }
+      .envelope { width: 290px; }
+      .login-box { padding: 36px 26px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pétalos -->
+  <div class="petals" id="petals"></div>
+  <!-- Corazones -->
+  <div class="hearts-bg" id="hearts"></div>
+
+  <!-- Sobre -->
+  <div class="envelope-wrapper">
+    <div class="envelope" onclick="abrirCarta()">
+      <div class="envelope-body">
+        <p class="to-label">Para ti,</p>
+        <p class="name">Milagros</p>
+        <div class="seal">💌</div>
+        <p class="open-hint">toca para abrir...</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════ Modal Carta ══════════════ -->
+  <div class="modal-overlay" id="modal">
+    <div class="carta">
+      <span class="carta-close" onclick="cerrarCarta()">✕</span>
+      <div class="carta-header">
+        <div class="roses">🌹 🌷 🌹</div>
+        <h1>Para Milagros</h1>
+        <p class="subtitle">con todo el amor de mi corazón</p>
+      </div>
+      <div class="divider">❦ ❦ ❦</div>
+      <div class="carta-body" id="cuerpo-carta">
+        <span class="saludo">Mi querida Milagros,</span>
+
+        <p>
+          Mira, ya sabes lo mucho que te quiero y lo que quiero es consentirte,
+          se que me diras que sufriste, que pasaste por muchas cosas,
+          pero a mi no me importa, soy ambicioso cuando se trata de quererte
+          y no me arrepiento de eso, porque querer es poder y yo te quiero.
+          Eres una chica que vale oro, no lo digo por las apariencias,
+          lo digo porque eres estudiosa, responsable y buena persona.
+          No quiero verte triste y hare todo lo que pueda para hacerte
+          la persona mas feliz del mundo. 🌹
+        </p>
+
+        <p class="firma">
+          Con todo mi cariño, <br/>
+          <span>quien te quiere de verdad ♥</span>
+        </p>
+
+        <!-- Pregunta secreta dentro de la carta -->
+        <div class="pregunta-section">
+          <p class="pregunta-texto">
+            Esto quiero que me lo respondas cuando estés segura...<br/>
+            no quiero apresurarte, pequeña.<br/>
+            Siempre quiero lo mejor para ti. 🌹
+          </p>
+          <button class="lock-btn" onclick="abrirLogin()">
+            <span class="lock-icon">🔐</span>
+            <span class="lock-hint">tu respuesta aquí...</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ Modal Login ══════════════ -->
+  <div class="login-overlay" id="loginModal">
+    <div class="login-box">
+      <span class="close-login" onclick="cerrarLogin()">✕</span>
+      <div class="login-icon">🔐</div>
+      <p class="login-title">Solo para ti, pequeña</p>
+      <p class="login-sub">escribe la contraseña de tu corazón</p>
+
+      <div class="input-wrapper">
+        <input
+          class="login-input"
+          id="passInput"
+          type="password"
+          placeholder="contraseña..."
+          autocomplete="off"
+          maxlength="20"
+          oninput="actualizarHint()"
+          onkeydown="if(event.key==='Enter') verificarPass()"
+        />
+        <button class="toggle-pass" type="button" onclick="toggleVer()" id="ojito" title="ver contraseña">👁️</button>
+      </div>
+
+      <p class="char-hint" id="charHint">solo son 9 caracteres 🌷</p>
+
+      <div>
+        <span class="pista-link" onclick="abrirPista()">💡 pista</span>
+      </div>
+
+      <button class="login-btn" onclick="verificarPass()">Abrir 💕</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ Popup Pista ══════════════ -->
+  <div class="pista-popup" id="pistaPopup">
+    <div class="pista-box">
+      <span class="close-pista" onclick="cerrarPista()">✕</span>
+      <div class="pista-emoji">💭</div>
+      <p class="pista-title">Tu pista, pequeña...</p>
+      <p class="pista-texto">
+        La contraseña es como me llamas tú de cariño.<br/><br/>
+        Yo te llamo <em>pequeña</em>...<br/>
+        tú a mí... 🥰
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════ Modal Éxito ══════════════ -->
+  <div class="exito-overlay" id="exitoModal">
+    <div class="exito-box">
+      <span class="close-exito" onclick="cerrarExito()">✕</span>
+      <div class="exito-icon">💖</div>
+      <p class="exito-title">Mi respuesta, pequeña...</p>
+      <p class="exito-mensaje">
+        Esta carta no es todo lo que siento, y seguiré demostrándolo
+        porque para mí eres alguien muy importante,my pequeña. 🌹
+      </p>
+      <p class="exito-firma">con todo mi amor ♥</p>
+      <a href="novia.html" class="btn-pagina2" onclick="sessionStorage.setItem('musicTime', audio.currentTime)">Continúa aquí... 💌</a>
+    </div>
+  </div>
+
+  <!-- Reproductor de música -->
+  <div class="music-player">
+    <button class="play-btn" id="playBtn" onclick="toggleMusica()">▶</button>
+    <div class="music-info">
+      <span class="song-title">Gran Amor</span>
+      <span class="artist">♫ para Milagros</span>
+    </div>
+    <input class="volume-slider" type="range" min="0" max="1" step="0.05" value="0.7"
+           oninput="audio.volume = this.value" />
+  </div>
+
+  <audio id="audio" loop>
+    <source src="gran-amor.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+    const audio   = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+
+    function abrirCarta() {
+      document.getElementById('modal').classList.add('open');
+      audio.volume = 0.7;
+      audio.play().catch(() => {});
+      playBtn.textContent = '⏸';
+    }
+    function cerrarCarta() { document.getElementById('modal').classList.remove('open'); }
+
+    function toggleMusica() {
+      if (audio.paused) { audio.play(); playBtn.textContent = '⏸'; }
+      else              { audio.pause(); playBtn.textContent = '▶'; }
+    }
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) cerrarCarta();
+    });
+
+    // ── Login ──
+    function abrirLogin() { document.getElementById('loginModal').classList.add('open'); }
+    function cerrarLogin() {
+      document.getElementById('loginModal').classList.remove('open');
+      document.getElementById('passInput').value = '';
+      document.getElementById('passInput').classList.remove('error');
+    }
+    document.getElementById('loginModal').addEventListener('click', function(e) {
+      if (e.target === this) cerrarLogin();
+    });
+
+    // ── Ver / ocultar contraseña ──
+    function toggleVer() {
+      const inp   = document.getElementById('passInput');
+      const ojito = document.getElementById('ojito');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        ojito.textContent = '🙈';
+      } else {
+        inp.type = 'password';
+        ojito.textContent = '👁️';
+      }
+    }
+
+    // ── Contador / pista de caracteres ──
+    function actualizarHint() {
+      const inp  = document.getElementById('passInput');
+      const hint = document.getElementById('charHint');
+      const len  = inp.value.length;
+      if (len === 0) {
+        hint.textContent = 'solo son 9 caracteres 🌷';
+        hint.classList.remove('completo');
+      } else if (len < 9) {
+        const faltan = 9 - len;
+        hint.textContent = `te faltan ${faltan} caracter${faltan === 1 ? '' : 'es'} 💕`;
+        hint.classList.remove('completo');
+      } else if (len === 9) {
+        hint.textContent = '¡ya tiene 9! intenta entrar 🔑';
+        hint.classList.add('completo');
+      } else {
+        hint.textContent = 'eso es demasiado, pequeña 😊';
+        hint.classList.remove('completo');
+      }
+    }
+
+    function verificarPass() {
+      const inp = document.getElementById('passInput');
+      if (inp.value.toLowerCase().trim() === 'grandulon') {
+        cerrarLogin();
+        setTimeout(() => document.getElementById('exitoModal').classList.add('open'), 200);
+      } else {
+        inp.classList.remove('error');
+        void inp.offsetWidth; // reinicia animación
+        inp.classList.add('error');
+        inp.value = '';
+      }
+    }
+
+    // ── Pista ──
+    function abrirPista() { document.getElementById('pistaPopup').classList.add('open'); }
+    function cerrarPista() { document.getElementById('pistaPopup').classList.remove('open'); }
+    document.getElementById('pistaPopup').addEventListener('click', function(e) {
+      if (e.target === this) cerrarPista();
+    });
+
+    // ── Éxito ──
+    function cerrarExito() { document.getElementById('exitoModal').classList.remove('open'); }
+    document.getElementById('exitoModal').addEventListener('click', function(e) {
+      if (e.target === this) cerrarExito();
+    });
+
+    // ── Pétalos ──
+    const petalsEl = document.getElementById('petals');
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left              = Math.random() * 100 + 'vw';
+      p.style.animationDuration = (6 + Math.random() * 10) + 's';
+      p.style.animationDelay    = (Math.random() * 12) + 's';
+      p.style.width = p.style.height = (10 + Math.random() * 14) + 'px';
+      p.style.transform = `rotate(${Math.random() * 360}deg)`;
+      petalsEl.appendChild(p);
+    }
+
+    // ── Corazones ──
+    const heartsEl = document.getElementById('hearts');
+    const heartEmojis = ['❤️', '🌹', '💕', '💗', '🌷', '💖'];
+    for (let i = 0; i < 18; i++) {
+      const h = document.createElement('div');
+      h.className   = 'heart-float';
+      h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      h.style.left              = Math.random() * 100 + 'vw';
+      h.style.animationDuration = (10 + Math.random() * 14) + 's';
+      h.style.animationDelay    = (Math.random() * 16) + 's';
+      h.style.fontSize          = (1 + Math.random() * 1.6) + 'rem';
+      heartsEl.appendChild(h);
+    }
+  </script>
+</body>
+</html>
